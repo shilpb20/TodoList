@@ -1,0 +1,69 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using TodoList.Application.DTOs;
+using TodoList.Domain;
+
+namespace TodoList.TestDataBuilder
+{
+    public class TodoItemDtoBuilder
+    {
+        private int _id = 1;
+        private string _title = "Default title";
+        private string _description = "Default description";
+        private DateTime _dueAt = DateTime.UtcNow.AddDays(1);
+        private DateTime _createdAt = DateTime.UtcNow;
+        private TodoStatus _status = TodoStatus.Pending;
+
+        public TodoItemDtoBuilder WithId(int id)
+        {
+            _id = id;
+            return this;
+        }
+
+        public TodoItemDtoBuilder WithTitle(string title)
+        {
+            _title = title;
+            return this;
+        }
+
+        public TodoItemDtoBuilder WithDescription(string description)
+        {
+            _description = description;
+            return this;
+        }
+
+        public TodoItemDtoBuilder WithDueAt(DateTime dueAt)
+        {
+            _dueAt = dueAt;
+            return this;
+        }
+
+        public TodoItemDtoBuilder WithCreatedAt(DateTime createdAt)
+        {
+            _createdAt = createdAt;
+            return this;
+        }
+
+        public TodoItemDtoBuilder WithStatus(TodoStatus status)
+        {
+            _status = status;
+            return this;
+        }
+
+        public TodoItemDto Build()
+        {
+            return new TodoItemDto
+            {
+                Id = _id,
+                Title = _title,
+                Description = _description,
+                DueAt = _dueAt,
+                CreatedAt = _createdAt,
+                Status = _status
+            };
+        }
+    }
+}
