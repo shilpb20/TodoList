@@ -51,7 +51,7 @@ namespace TodoList.Domain.Tests
         }
 
         [Fact]
-        public void Constructor_ShouldTrimTitle_WhenTitleHasLeadingOrTrailingSpaces()
+        public void CreateObject_ShouldTrimTitle_WhenTitleHasLeadingOrTrailingSpaces()
         {
             // Arrange
             int id = 1;
@@ -83,6 +83,35 @@ namespace TodoList.Domain.Tests
                 .WithMessage("Title cannot be null or empty.*");
         }
 
+        [Fact]
+        public void CreateObject_ShouldTrimDescription_WhenDescriptionHasLeadingOrTrailingSpaces()
+        {
+            // Arrange
+            int id = 1;
+            string title = "Task";
+            string descriptionWithSpaces = "  some details here   ";
+            string expectedDescription = "some details here";
+
+            // Act
+            var todoItem = new TodoItem(id, title, descriptionWithSpaces);
+
+            // Assert
+            todoItem.Description.Should().Be(expectedDescription);
+        }
+
+        [Fact]
+        public void CreateObject_ShouldSetEmptyDescription_WhenDescriptionIsNull()
+        {
+            // Arrange
+            int id = 1;
+            string title = "Task";
+
+            // Act
+            var todoItem = new TodoItem(id, title, null);
+
+            // Assert
+            todoItem.Description.Should().BeEmpty();
+        }
 
         #endregion
 

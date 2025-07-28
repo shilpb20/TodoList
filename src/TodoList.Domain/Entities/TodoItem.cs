@@ -18,7 +18,7 @@
 
             this.Id = id;
             this.Title = title.Trim();
-            Description = description ?? string.Empty;
+            Description = description?.Trim() ?? string.Empty;
 
             CreatedAt = DateTime.UtcNow;
             Status = TodoStatus.Pending;
