@@ -11,6 +11,8 @@ namespace TodoList.Domain.Tests
 {
     public class TodoItemTests
     {
+        #region valid-object-creation tests
+
         [Fact]
         public void CreateObject_ShouldCreateTodoItem_WithValidData()
         {
@@ -47,5 +49,21 @@ namespace TodoList.Domain.Tests
             todoItem.Status.Should().Be(TodoStatus.Pending);
             todoItem.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(0.5));
         }
+
+        #endregion
+
+        #region invalid-object-creation tests
+
+        [Theory]
+        [InlineData(null)]
+        [InlineData("")]
+        [InlineData(" ")]
+        public void Constructor_ShouldThrowArgumentException_WhenTitleIsInvalid(string invalidTitle)
+        {
+            Action act = () => new TodoItem(1, invalidTitle);
+            act.Should().Throw<ArgumentException>();
+        }
+
+        #endregion
     }
 }

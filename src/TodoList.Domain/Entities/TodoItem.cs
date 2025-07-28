@@ -10,6 +10,9 @@
 
         public TodoItem(int id, string title, string description = null)
         {
+            if (string.IsNullOrWhiteSpace(title))
+                throw new ArgumentException("Title cannot be null or empty.", nameof(title));
+
             this.Id = id;
             this.Title = title;
             Description = description ?? string.Empty;
@@ -17,5 +20,6 @@
             CreatedAt = DateTime.UtcNow;
             Status = TodoStatus.Pending;
         }
+
     }
 }
