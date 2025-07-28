@@ -58,10 +58,26 @@ namespace TodoList.Domain.Tests
         [InlineData(null)]
         [InlineData("")]
         [InlineData(" ")]
-        public void Constructor_ShouldThrowArgumentException_WhenTitleIsInvalid(string invalidTitle)
+        public void CreateObject_ShouldThrowArgumentException_WhenTitleIsInvalid(string invalidTitle)
         {
             Action act = () => new TodoItem(1, invalidTitle);
             act.Should().Throw<ArgumentException>();
+        }
+
+        [Fact]
+        public void CreateObject_ShouldThrowArgumentOutOfRangeException_WhenIdIsInvalid()
+        {
+            Action act = () => new TodoItem(0, "Valid title");
+            act.Should().Throw<ArgumentOutOfRangeException>();
+        }
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(int.MinValue)]
+        public void CreateObject_ShouldThrowArgumentOutOfRangeException_WhenIdIsNegative(int invalidId)
+        {
+            Action act = () => new TodoItem(invalidId, "Valid title");
+            act.Should().Throw<ArgumentOutOfRangeException>();
         }
 
         #endregion
