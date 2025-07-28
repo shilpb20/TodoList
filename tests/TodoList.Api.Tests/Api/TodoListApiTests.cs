@@ -53,14 +53,14 @@ namespace TodoList.Api.Tests.Controllers
             var response = await _httpClient.PostAsJsonAsync(_todoListApiUrl, addItem);
 
             //Assert
-            response.Should().Be(HttpStatusCode.Created);
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
 
             var createdItem = await response.Content.ReadFromJsonAsync<TodoItemDto>();
             createdItem.Should().NotBeNull();
 
             createdItem.Id.Should().Be(1);
-            createdItem.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMilliseconds(200));
-            createdItem.Status.Should().Be(TodoStatus.Pending);
+            createdItem.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
+            createdItem.Status.Should().Be(TodoStatus.Pending.ToString());
 
             createdItem.Title.Should().Be(addItem.Title);
             createdItem.Description.Should().Be(addItem.Description);

@@ -62,7 +62,7 @@ namespace TodoList.TestDataBuilder
                 Description = _description,
                 DueAt = _dueAt,
                 CreatedAt = _createdAt,
-                Status = _status
+                Status = _status.ToString(),
             };
         }
     }
