@@ -32,7 +32,7 @@ namespace TodoList.Api.Tests.Controllers
 
         #endregion
 
-        #region get-all tests
+        #region get-items tests
 
         [Fact]
         public async Task GetTodoItems_ReturnsOkWithEmptyList_WhenNoItemsExist()
@@ -49,7 +49,7 @@ namespace TodoList.Api.Tests.Controllers
 
         #endregion
 
-        #region add tests
+        #region add-items tests
 
         [Fact]
         public async Task AddTodoItem_ReturnsCreatedResult_WithCreatedItem()
@@ -72,7 +72,6 @@ namespace TodoList.Api.Tests.Controllers
 
             createdItem.Title.Should().Be(addItem.Title);
             createdItem.Description.Should().Be(addItem.Description);
-            createdItem.DueAt.Should().Be(addItem.DueAt);
         }
 
         #endregion

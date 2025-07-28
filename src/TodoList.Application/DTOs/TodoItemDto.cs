@@ -8,8 +8,6 @@
 
         public string? Description { get; set; } = string.Empty;
 
-        public DateTime? DueAt { get; set; }
-
         public DateTime CreatedAt { get; set; }
 
         public string Status { get; set; }

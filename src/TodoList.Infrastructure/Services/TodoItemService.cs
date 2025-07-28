@@ -14,7 +14,6 @@ namespace TodoList.Infrastructure.Services
                 Id = 1,
                 Title = "Default title",
                 Description = "Default description",
-                DueAt = DateTime.Today.AddDays(1),
                 Status = "Pending",
                 CreatedAt = DateTime.UtcNow,
             };

@@ -2,9 +2,6 @@
 {
     public enum TodoStatus
     {
-        Pending,
-        InProgress,
-        Done,
-        Cancelled
+        Pending
     };
 }

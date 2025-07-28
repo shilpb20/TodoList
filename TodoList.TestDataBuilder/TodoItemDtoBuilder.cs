@@ -13,7 +13,6 @@ namespace TodoList.TestDataBuilder
         private int _id = 1;
         private string _title = "Default title";
         private string _description = "Default description";
-        private DateTime _dueAt = DateTime.UtcNow.AddDays(1);
         private DateTime _createdAt = DateTime.UtcNow;
         private TodoStatus _status = TodoStatus.Pending;
 
@@ -32,12 +31,6 @@ namespace TodoList.TestDataBuilder
         public TodoItemDtoBuilder WithDescription(string description)
         {
             _description = description;
-            return this;
-        }
-
-        public TodoItemDtoBuilder WithDueAt(DateTime dueAt)
-        {
-            _dueAt = dueAt;
             return this;
         }
 
@@ -60,7 +53,6 @@ namespace TodoList.TestDataBuilder
                 Id = _id,
                 Title = _title,
                 Description = _description,
-                DueAt = _dueAt,
                 CreatedAt = _createdAt,
                 Status = _status.ToString(),
             };

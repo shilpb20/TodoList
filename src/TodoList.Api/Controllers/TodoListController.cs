@@ -10,21 +10,20 @@ namespace TodoList.Api.Controllers
     {
         [HttpGet]
         [ProducesResponseType(typeof(List<TodoItemDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetTodoItems()
+        public async Task<ActionResult<List<TodoItemDto>>> GetTodoItems()
         {
             return Ok(new List<TodoItemDto>());
         }
 
         [HttpPost]
         [ProducesResponseType(typeof(TodoItemDto), StatusCodes.Status201Created)]
-        public async Task<IActionResult> AddTodoItem(TodoItemCreateDto createDto)
+        public async Task<ActionResult<TodoItemDto>> AddTodoItem(TodoItemCreateDto createDto)
         {
             var result = new TodoItemDto()
             {
                 Id = 1,
                 Title = "Default title",
                 Description = "Default description",
-                DueAt = DateTime.Today.AddDays(1),
                 Status = "Pending",
                 CreatedAt = DateTime.UtcNow,
             };
