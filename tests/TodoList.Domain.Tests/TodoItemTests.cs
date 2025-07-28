@@ -29,5 +29,23 @@ namespace TodoList.Domain.Tests
             todoItem.Status.Should().Be(TodoStatus.Pending);
             todoItem.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(0.5));
         }
+
+        [Fact]
+        public void CreateObject_ShouldCreateTodoItem_WithOptionalDescription()
+        {
+            // Arrange
+            int id = 1;
+            string title = "Write backend";
+
+            // Act
+            var todoItem = new TodoItem(id, title);
+
+            // Assert
+            todoItem.Id.Should().Be(id);
+            todoItem.Title.Should().Be(title);
+            todoItem.Description.Should().BeNullOrEmpty();
+            todoItem.Status.Should().Be(TodoStatus.Pending);
+            todoItem.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(0.5));
+        }
     }
 }
