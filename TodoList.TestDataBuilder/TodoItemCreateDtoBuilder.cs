@@ -8,20 +8,21 @@ namespace TodoList.TestDataBuilder
 {
     public class TodoItemCreateDtoBuilder
     {
-        private string _description = "Default description";
         private string _title = "Default title";
+        private string _description = "Default description";
+
 
         private DateTime _dueDate = DateTime.Today.AddDays(1);
 
-        public TodoItemCreateDtoBuilder WithTitle(string description)
+        public TodoItemCreateDtoBuilder WithTitle(string title)
         {
-            _description = description;
+            _title = title;
             return this;
         }
 
-        public TodoItemCreateDtoBuilder WithDescription(string details)
+        public TodoItemCreateDtoBuilder WithDescription(string description)
         {
-            _title = details;
+            _description = description;
             return this;
         }
 

@@ -11,7 +11,7 @@ namespace TodoList.Infrastructure.Services
         private readonly List<TodoItem> _items = new();
         private int _nextId = 1;
 
-        public async Task<TodoItemDto> AddTodoItem(TodoItemCreateDto createDto)
+        public async Task<TodoItemDto> AddItem(TodoItemCreateDto createDto)
         {
             var todoItem = new TodoItem(_nextId++, createDto.Title, createDto.Description);
 
@@ -27,6 +27,20 @@ namespace TodoList.Infrastructure.Services
             };
 
             return await Task.FromResult(dto);
+        }
+
+        public Task<IEnumerable<TodoItemDto>> GetAllItems()
+        {
+            var dtos = _items.Select(todoItem => new TodoItemDto
+            {
+                Id = todoItem.Id,
+                Title = todoItem.Title,
+                Description = todoItem.Description,
+                Status = todoItem.Status.ToString(),
+                CreatedAt = todoItem.CreatedAt
+            });
+
+            return Task.FromResult(dtos);
         }
     }
 }
