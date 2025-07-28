@@ -66,9 +66,41 @@ namespace TodoList.Application.Tests.Services
             newItem2.Status.Should().Be("Pending");
         }
 
+        
+        [Fact]
+        public async Task AddItem_ShouldAllowDuplicateTitles()
+        {
+            // Arrange
+            var title = "Duplicate Task";
+            var createDto1 = _createDtoBuilder.WithTitle(title).Build();
+            var createDto2 = _createDtoBuilder.WithTitle(title).Build();
+
+            // Act
+            var newItem1 = await _service.AddItem(createDto1);
+            var newItem2 = await _service.AddItem(createDto2);
+
+            // Assert
+            newItem1.Should().NotBeNull();
+            newItem2.Should().NotBeNull();
+            newItem1.Title.Should().Be(title);
+            newItem2.Title.Should().Be(title);
+            newItem1.Id.Should().NotBe(newItem2.Id);
+        }
+
         #endregion
 
         #region get-all-items tests
+
+        [Fact]
+        public async Task GetAll_ShouldReturnEmpty_WhenNoItemsAdded()
+        {
+            // Act
+            var allItems = await _service.GetAllItems();
+
+            // Assert
+            allItems.Should().NotBeNull();
+            allItems.Should().BeEmpty();
+        }
 
         [Fact]
         public async Task GetAll_ShouldReturnAllAddedTodoItems()
