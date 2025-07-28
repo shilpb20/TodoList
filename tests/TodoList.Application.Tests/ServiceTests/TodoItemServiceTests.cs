@@ -43,6 +43,29 @@ namespace TodoList.Application.Tests.Services
             Assert.Equal("Pending", newItem.Status);
         }
 
+        [Fact]
+        public async Task AddTodoItem_ShouldAddMultipleItems_WithUniqueIds()
+        {
+            // Arrange
+            var createDto1 = _createDtoBuilder.WithTitle("Task 1").Build();
+            var createDto2 = _createDtoBuilder.WithTitle("Task 2").Build();
+
+            // Act
+            var newItem1 = await _service.AddTodoItem(createDto1);
+            var newItem2 = await _service.AddTodoItem(createDto2);
+
+            // Assert
+            Assert.NotNull(newItem1);
+            Assert.NotNull(newItem2);
+
+            Assert.NotEqual(newItem1.Id, newItem2.Id);
+            Assert.Equal(createDto1.Title, newItem1.Title);
+            Assert.Equal(createDto2.Title, newItem2.Title);
+            Assert.Equal("Pending", newItem1.Status);
+            Assert.Equal("Pending", newItem2.Status);
+        }
+
+
         #endregion
     }
 }

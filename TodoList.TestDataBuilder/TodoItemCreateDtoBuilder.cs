@@ -13,13 +13,13 @@ namespace TodoList.TestDataBuilder
 
         private DateTime _dueDate = DateTime.Today.AddDays(1);
 
-        public TodoItemCreateDtoBuilder WithDescription(string description)
+        public TodoItemCreateDtoBuilder WithTitle(string description)
         {
             _description = description;
             return this;
         }
 
-        public TodoItemCreateDtoBuilder WithDetails(string details)
+        public TodoItemCreateDtoBuilder WithDescription(string details)
         {
             _title = details;
             return this;
@@ -37,7 +37,6 @@ namespace TodoList.TestDataBuilder
             {
                 Description = _description,
                 Title = _title,
-                DueAt = _dueDate
             };
         }
     }
