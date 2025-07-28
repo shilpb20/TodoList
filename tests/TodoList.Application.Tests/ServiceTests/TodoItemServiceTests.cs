@@ -1,6 +1,7 @@
 ﻿using TodoList.Application.Services;
 using TodoList.Infrastructure.Services;
 using TodoList.TestDataBuilder;
+using FluentAssertions;
 
 namespace TodoList.Application.Tests.Services
 {
@@ -36,11 +37,10 @@ namespace TodoList.Application.Tests.Services
             var newItem = await _service.AddItem(createDto);
 
             //Assert
-            Assert.NotNull(newItem);
-            Assert.NotNull(newItem);
-            Assert.Equal(createDto.Title, newItem.Title);
-            Assert.Equal(createDto.Description, newItem.Description);
-            Assert.Equal("Pending", newItem.Status);
+            newItem.Should().NotBeNull();
+            newItem.Title.Should().Be(createDto.Title);
+            newItem.Description.Should().Be(createDto.Description);
+            newItem.Status.Should().Be("Pending");
         }
 
         [Fact]
@@ -55,14 +55,15 @@ namespace TodoList.Application.Tests.Services
             var newItem2 = await _service.AddItem(createDto2);
 
             // Assert
-            Assert.NotNull(newItem1);
-            Assert.NotNull(newItem2);
+            newItem1.Should().NotBeNull();
+            newItem2.Should().NotBeNull();
+            newItem2.Id.Should().NotBe(newItem1.Id);
 
-            Assert.NotEqual(newItem1.Id, newItem2.Id);
-            Assert.Equal(createDto1.Title, newItem1.Title);
-            Assert.Equal(createDto2.Title, newItem2.Title);
-            Assert.Equal("Pending", newItem1.Status);
-            Assert.Equal("Pending", newItem2.Status);
+            newItem1.Title.Should().Be(createDto1.Title);
+            newItem1.Status.Should().Be("Pending");
+
+            newItem2.Title.Should().Be(createDto2.Title);
+            newItem2.Status.Should().Be("Pending");
         }
 
         #endregion
@@ -83,15 +84,67 @@ namespace TodoList.Application.Tests.Services
             var allItems = await _service.GetAllItems();
 
             // Assert
-            Assert.NotNull(allItems);
+            allItems.Should().NotBeNull();
 
             var itemsList = allItems.ToList();
-            Assert.Equal(2, itemsList.Count);
-            Assert.NotEqual(itemsList[0].Id, itemsList[1].Id);
+            itemsList.Count.Should().Be(2);
+            itemsList[1].Id.Should().NotBe(itemsList[0].Id);
 
-            Assert.Contains(itemsList, item => item.Title == "Task 1");
-            Assert.Contains(itemsList, item => item.Title == "Task 2");
+            itemsList.Should().Contain(i => i.Title == "Task 1");
+            itemsList.Should().Contain(i => i.Title == "Task 2");
+
         }
+
+        #endregion
+
+        #region delete-item tests
+
+        [Fact]
+        public async Task DeleteTodoItem_ShouldRemoveItem_WhenIdIsValid()
+        {
+            // Arrange
+            var createDto1 = _createDtoBuilder.WithTitle("Item 1").Build();
+            var createDto2 = _createDtoBuilder.WithTitle("Item 2").Build();
+
+            var item1 = await _service.AddItem(createDto1);
+            var item2 = await _service.AddItem(createDto2);
+
+            // Act
+            var deletedItem = await _service.DeleteItem(item1.Id);
+            var remainingItems = await _service.GetAllItems();
+
+            // Assert
+            deletedItem.Should().BeEquivalentTo(item1);
+            remainingItems.Should().NotContain(i => i.Id == item1.Id);
+            remainingItems.Should().ContainSingle(i => i.Id == item2.Id);
+        }
+
+        [Fact]
+        public async Task DeleteItem_ShouldReturnNull_WhenItemNotFound()
+        {
+            // Act
+            var deletedItem = await _service.DeleteItem(999);
+
+            // Assert
+            deletedItem.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task DeleteItem_ShouldReturnNull_WhenDeletingSameItemTwice()
+        {
+            // Arrange
+            var createDto = _createDtoBuilder.WithTitle("Item").Build();
+            var addedItem = await _service.AddItem(createDto);
+
+            // Act
+            var firstDelete = await _service.DeleteItem(addedItem.Id);
+            var secondDelete = await _service.DeleteItem(addedItem.Id);
+
+            // Assert
+            firstDelete.Should().NotBeNull();
+            secondDelete.Should().BeNull();
+        }
+
 
         #endregion
     }

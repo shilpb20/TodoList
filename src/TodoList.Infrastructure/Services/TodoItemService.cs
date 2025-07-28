@@ -7,9 +7,15 @@ using TodoList.TestDataBuilder;
 namespace TodoList.Infrastructure.Services
 {
     public class TodoItemService : ITodoItemService
-    {
+    {   
+        #region fields and properties
+
         private readonly List<TodoItem> _items = new();
         private int _nextId = 1;
+
+        #endregion
+
+        #region add-item
 
         public async Task<TodoItemDto> AddItem(TodoItemCreateDto createDto)
         {
@@ -29,6 +35,10 @@ namespace TodoList.Infrastructure.Services
             return await Task.FromResult(dto);
         }
 
+        #endregion
+
+        #region get-all items
+
         public Task<IEnumerable<TodoItemDto>> GetAllItems()
         {
             var dtos = _items.Select(todoItem => new TodoItemDto
@@ -42,5 +52,30 @@ namespace TodoList.Infrastructure.Services
 
             return Task.FromResult(dtos);
         }
+
+        #endregion
+
+        #region delete-item
+
+        public Task<TodoItemDto?> DeleteItem(int id)
+        {
+            var item = _items.FirstOrDefault(i => i.Id == id);
+            if (item is null)
+                return Task.FromResult<TodoItemDto?>(null);
+
+            _items.Remove(item);
+            var deletedDto = new TodoItemDto
+            {
+                Id = item.Id,
+                Title = item.Title,
+                Description = item.Description,
+                Status = item.Status.ToString(),
+                CreatedAt = item.CreatedAt
+            };
+
+            return Task.FromResult<TodoItemDto?>(deletedDto);
+        }
+
+        #endregion
     }
 }
