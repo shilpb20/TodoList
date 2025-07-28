@@ -4,15 +4,15 @@
     {
         public int Id { get; private set; }
         public string Title { get; private set; }
-        public string Description { get; private set; }
+        public string? Description { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public TodoStatus Status { get;  private set; }
 
-        public TodoItem(int id, string title, string description)
+        public TodoItem(int id, string title, string description = null)
         {
             this.Id = id;
             this.Title = title;
-            this.Description = description;
+            Description = description ?? string.Empty;
 
             CreatedAt = DateTime.UtcNow;
             Status = TodoStatus.Pending;
