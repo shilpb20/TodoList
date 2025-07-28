@@ -1,4 +1,5 @@
-﻿using TodoList.Domain;
+﻿using System.ComponentModel.DataAnnotations;
+using TodoList.Domain;
 
 namespace TodoList.TestDataBuilder
 {

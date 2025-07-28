@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TodoList.Application.DTOs;
+using TodoList.TestDataBuilder;
 
 namespace TodoList.Api.Controllers
 {
@@ -12,6 +13,23 @@ namespace TodoList.Api.Controllers
         public async Task<IActionResult> GetTodoItems()
         {
             return Ok(new List<TodoItemDto>());
+        }
+
+        [HttpPost]
+        [ProducesResponseType(typeof(TodoItemDto), StatusCodes.Status201Created)]
+        public async Task<IActionResult> AddTodoItem(TodoItemCreateDto createDto)
+        {
+            var result = new TodoItemDto()
+            {
+                Id = 1,
+                Title = "Default title",
+                Description = "Default description",
+                DueAt = DateTime.Today.AddDays(1),
+                Status = "Pending",
+                CreatedAt = DateTime.UtcNow,
+            };
+
+            return Created("", result);
         }
     }
 }

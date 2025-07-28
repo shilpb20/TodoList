@@ -14,6 +14,6 @@ namespace TodoList.Application.DTOs
 
         public DateTime CreatedAt { get; set; }
 
-        public TodoStatus Status { get; set; }
+        public string Status { get; set; }
     }
 }
