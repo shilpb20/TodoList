@@ -50,6 +50,40 @@ namespace TodoList.Domain.Tests
             todoItem.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromSeconds(0.5));
         }
 
+        [Fact]
+        public void Constructor_ShouldTrimTitle_WhenTitleHasLeadingOrTrailingSpaces()
+        {
+            // Arrange
+            int id = 1;
+            string titleWithSpaces = "  Trim this title  ";
+            string expectedTitle = "Trim this title";
+
+            // Act
+            var todoItem = new TodoItem(id, titleWithSpaces);
+
+            // Assert
+            todoItem.Title.Should().Be(expectedTitle);
+        }
+
+        [Theory]
+        [InlineData(" ")]
+        [InlineData("    ")]
+        [InlineData("\t")]
+        [InlineData("\n")]
+        public void CreateObject_ShouldThrowArgumentException_WhenTitleIsWhitespaceOnly(string title)
+        {
+            // Arrange
+            int id = 1;
+
+            // Act
+            Action act = () => new TodoItem(id, title);
+
+            // Assert
+            act.Should().Throw<ArgumentException>()
+                .WithMessage("Title cannot be null or empty.*");
+        }
+
+
         #endregion
 
         #region invalid-object-creation tests
