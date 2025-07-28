@@ -5,6 +5,7 @@ namespace TodoList.Application.Services
 {
     public interface ITodoItemService
     {
-        Task<TodoItemDto> AddTodoItem(TodoItemCreateDto createDto);
+        Task<TodoItemDto> AddItem(TodoItemCreateDto createDto);
+        Task<IEnumerable<TodoItemDto>> GetAllItems();
     }
 }

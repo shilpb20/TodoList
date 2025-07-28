@@ -24,7 +24,7 @@ namespace TodoList.Application.Tests.Services
 
         #endregion
 
-        #region add tests
+        #region add-item tests
 
         [Fact]
         public async Task AddTodoItem_ShouldAddItem_WhenValid()
@@ -33,7 +33,7 @@ namespace TodoList.Application.Tests.Services
             var createDto = _createDtoBuilder.Build();
 
             //Act
-            var newItem = await _service.AddTodoItem(createDto);
+            var newItem = await _service.AddItem(createDto);
 
             //Assert
             Assert.NotNull(newItem);
@@ -51,8 +51,8 @@ namespace TodoList.Application.Tests.Services
             var createDto2 = _createDtoBuilder.WithTitle("Task 2").Build();
 
             // Act
-            var newItem1 = await _service.AddTodoItem(createDto1);
-            var newItem2 = await _service.AddTodoItem(createDto2);
+            var newItem1 = await _service.AddItem(createDto1);
+            var newItem2 = await _service.AddItem(createDto2);
 
             // Assert
             Assert.NotNull(newItem1);
@@ -65,6 +65,33 @@ namespace TodoList.Application.Tests.Services
             Assert.Equal("Pending", newItem2.Status);
         }
 
+        #endregion
+
+        #region get-all-items tests
+
+        [Fact]
+        public async Task GetAll_ShouldReturnAllAddedTodoItems()
+        {
+            // Arrange
+            var createDto1 = _createDtoBuilder.WithTitle("Task 1").Build();
+            var createDto2 = _createDtoBuilder.WithTitle("Task 2").Build();
+
+            await _service.AddItem(createDto1);
+            await _service.AddItem(createDto2);
+
+            // Act
+            var allItems = await _service.GetAllItems();
+
+            // Assert
+            Assert.NotNull(allItems);
+
+            var itemsList = allItems.ToList();
+            Assert.Equal(2, itemsList.Count);
+            Assert.NotEqual(itemsList[0].Id, itemsList[1].Id);
+
+            Assert.Contains(itemsList, item => item.Title == "Task 1");
+            Assert.Contains(itemsList, item => item.Title == "Task 2");
+        }
 
         #endregion
     }
