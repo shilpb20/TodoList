@@ -13,16 +13,24 @@ namespace TodoList.Api.Tests.Controllers
 {
     public class TodoListApiTests : IClassFixture<WebApplicationFactory<Program>>
     {
+        #region fields and properties
+
         private readonly HttpClient _httpClient;
         private readonly string _todoListApiUrl = "api/todo-list";
 
         private TodoItemCreateDtoBuilder _createDtoBuilder = new TodoItemCreateDtoBuilder();
         private TodoItemDtoBuilder _dtoBuilder = new TodoItemDtoBuilder();
 
+        #endregion
+
+        #region constructors and initialisors
+
         public TodoListApiTests(WebApplicationFactory<Program> factory)
         {
             _httpClient = factory.CreateClient();
         }
+
+        #endregion
 
         #region get-all tests
 
@@ -59,7 +67,7 @@ namespace TodoList.Api.Tests.Controllers
             createdItem.Should().NotBeNull();
 
             createdItem.Id.Should().Be(1);
-            createdItem.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(1));
+            createdItem.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(0.5));
             createdItem.Status.Should().Be(TodoStatus.Pending.ToString());
 
             createdItem.Title.Should().Be(addItem.Title);

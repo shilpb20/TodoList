@@ -1,6 +1,4 @@
-﻿using TodoList.Domain;
-
-namespace TodoList.Application.DTOs
+﻿namespace TodoList.Application.DTOs
 {
     public class TodoItemDto
     {

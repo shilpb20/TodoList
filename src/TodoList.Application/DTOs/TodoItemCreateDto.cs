@@ -1,11 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
-using TodoList.Domain;
-
-namespace TodoList.TestDataBuilder
+﻿namespace TodoList.TestDataBuilder
 {
     public class TodoItemCreateDto
     {
-        public string Title { get; set; } = string.Empty;
+        public string Title { get; set; }
 
         public string? Description { get; set; } = string.Empty;
 
