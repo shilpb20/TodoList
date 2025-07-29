@@ -1,13 +1,21 @@
 name: .NET CI
 
 on:
+<<<<<<< HEAD
   workflow_dispatch:
+=======
+>>>>>>> 18188b36eb73583837b3b72b20a92f0bee30f4a7
   push:
     branches:
       - '**'
   pull_request:
     branches:
+<<<<<<< HEAD
       - '**'   
+=======
+      - '**'
+
+>>>>>>> 18188b36eb73583837b3b72b20a92f0bee30f4a7
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
@@ -22,7 +30,11 @@ jobs:
         dotnet-version: '9.0.x'
 
     - name: Restore dependencies
+<<<<<<< HEAD
       run: dotnet restore TodoList.sln
+=======
+      run: dotnet restore
+>>>>>>> 18188b36eb73583837b3b72b20a92f0bee30f4a7
 
     - name: Build
       run: dotnet build --no-restore --configuration Release
