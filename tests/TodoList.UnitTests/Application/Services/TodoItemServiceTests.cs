@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
+using Moq;
+using TodoList.Application.IRepositories;
 using TodoList.Application.Services;
+using TodoList.Domain.Entities;
 using TodoList.Infrastructure.Mapper;
 using TodoList.Infrastructure.Repositories;
 using TodoList.Infrastructure.Services;
@@ -15,6 +18,7 @@ namespace TodoList.UnitTests.Application.Services
 
         private readonly ITodoItemService _service;
         private readonly TodoItemCreateDtoBuilder _createDtoBuilder = new ();
+        private readonly Mock<ITodoItemRepository> _mockRepo;
 
         #endregion
 
@@ -31,8 +35,8 @@ namespace TodoList.UnitTests.Application.Services
 
             var mapper = mapperConfig.CreateMapper();
 
-            var repository = new InMemoryTodoItemRepository();
-            _service = new TodoItemService(mapper, repository);
+            _mockRepo = new Mock<ITodoItemRepository>();
+            _service = new TodoItemService(mapper, _mockRepo.Object);
         }
 
         #endregion
@@ -167,7 +171,7 @@ namespace TodoList.UnitTests.Application.Services
         public async Task DeleteItem_ShouldReturnNull_WhenItemNotFound()
         {
             // Act
-            var deletedItem = await _service.DeleteItem(999);
+            var deletedItem = await _service.DeleteItem(Guid.NewGuid());
 
             // Assert
             deletedItem.Should().BeNull();

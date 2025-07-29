@@ -4,21 +4,19 @@ namespace TodoList.Domain.Entities
 {
     public class TodoItem
     {
-        public int Id { get; private set; }
+        public Guid Id { get; private set; }
         public string Title { get; private set; }
         public string Description { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public TodoStatus Status { get;  private set; }
 
-        public TodoItem(int id, string title, string description = null)
+        public TodoItem(string title, string description = null)
         {
-            if (id <= 0)
-                throw new ArgumentOutOfRangeException(nameof(id), "Id must be greater than zero.");
-
             if (string.IsNullOrWhiteSpace(title))
                 throw new ArgumentException("Title cannot be null or empty.", nameof(title));
 
-            this.Id = id;
+            Id = Guid.NewGuid();
+
             this.Title = title.Trim();
             Description = description?.Trim() ?? string.Empty;
 
