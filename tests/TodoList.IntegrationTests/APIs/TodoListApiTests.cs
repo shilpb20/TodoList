@@ -4,7 +4,7 @@ using System.Net;
 using System.Net.Http.Json;
 using TodoList.Application.DTOs;
 using TodoList.Domain.Enums;
-using TodoList.TestDataBuilder;
+using TodoList.TestDataBuilder.DTOs;
 
 namespace TodoList.IntegrationTests.APIs
 {
