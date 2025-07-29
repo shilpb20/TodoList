@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using TodoList.Application.Services;
 using TodoList.Infrastructure.Mapper;
+using TodoList.Infrastructure.Repositories;
 using TodoList.Infrastructure.Services;
 using TodoList.TestDataBuilder;
 
@@ -13,7 +14,6 @@ namespace TodoList.UnitTests.Application.Services
         #region fields and properties
 
         private readonly ITodoItemService _service;
-
         private readonly TodoItemCreateDtoBuilder _createDtoBuilder = new ();
 
         #endregion
@@ -31,7 +31,8 @@ namespace TodoList.UnitTests.Application.Services
 
             var mapper = mapperConfig.CreateMapper();
 
-            _service = new TodoItemService(mapper);
+            var repository = new InMemoryTodoItemRepository();
+            _service = new TodoItemService(mapper, repository);
         }
 
         #endregion
