@@ -45,15 +45,7 @@ namespace TodoList.Infrastructure.Services
 
         public Task<IEnumerable<TodoItemDto>> GetAllItems()
         {
-            var dtos = _items.Select(todoItem => new TodoItemDto
-            {
-                Id = todoItem.Id,
-                Title = todoItem.Title,
-                Description = todoItem.Description,
-                Status = todoItem.Status.ToString(),
-                CreatedAt = todoItem.CreatedAt
-            });
-
+            var dtos = _mapper.Map<IEnumerable<TodoItemDto>>(_items);
             return Task.FromResult(dtos);
         }
 
@@ -68,14 +60,7 @@ namespace TodoList.Infrastructure.Services
                 return Task.FromResult<TodoItemDto?>(null);
 
             _items.Remove(item);
-            var deletedDto = new TodoItemDto
-            {
-                Id = item.Id,
-                Title = item.Title,
-                Description = item.Description,
-                Status = item.Status.ToString(),
-                CreatedAt = item.CreatedAt
-            };
+            var deletedDto = _mapper.Map<TodoItemDto>(item);
 
             return Task.FromResult<TodoItemDto?>(deletedDto);
         }

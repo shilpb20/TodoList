@@ -6,16 +6,15 @@ using TodoList.Infrastructure.Mapper;
 using TodoList.Infrastructure.Services;
 using TodoList.TestDataBuilder;
 
-namespace TodoList.Application.Tests.Services
+namespace TodoList.UnitTests.Application.Services
 {
     public class TodoItemServiceTests
     {
         #region fields and properties
 
-        private ITodoItemService _service;
+        private readonly ITodoItemService _service;
 
-        private readonly TodoItemCreateDtoBuilder _createDtoBuilder = new TodoItemCreateDtoBuilder();
-        private readonly TodoItemDtoBuilder _dtoBuilder = new TodoItemDtoBuilder();
+        private readonly TodoItemCreateDtoBuilder _createDtoBuilder = new ();
 
         #endregion
 

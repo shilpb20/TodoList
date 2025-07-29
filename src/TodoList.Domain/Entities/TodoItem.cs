@@ -1,4 +1,6 @@
-﻿namespace TodoList.Domain.Entities
+﻿using TodoList.Domain.Enums;
+
+namespace TodoList.Domain.Entities
 {
     public class TodoItem
     {

@@ -1,4 +1,4 @@
-﻿namespace TodoList.Domain
+﻿namespace TodoList.Domain.Enums
 {
     public enum TodoStatus
     {
