@@ -1,7 +1,10 @@
-﻿using TodoList.Application.Services;
+﻿using AutoMapper;
+using FluentAssertions;
+using Microsoft.Extensions.Logging;
+using TodoList.Application.Services;
+using TodoList.Infrastructure.Mapper;
 using TodoList.Infrastructure.Services;
 using TodoList.TestDataBuilder;
-using FluentAssertions;
 
 namespace TodoList.Application.Tests.Services
 {
@@ -20,7 +23,16 @@ namespace TodoList.Application.Tests.Services
 
         public TodoItemServiceTests()
         {
-            _service = new TodoItemService();
+            var loggerFactory = LoggerFactory.Create(builder => { });
+
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile<TodoItemProfile>();
+            }, loggerFactory);
+
+            var mapper = mapperConfig.CreateMapper();
+
+            _service = new TodoItemService(mapper);
         }
 
         #endregion

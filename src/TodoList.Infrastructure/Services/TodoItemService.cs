@@ -1,4 +1,5 @@
 ﻿
+using AutoMapper;
 using TodoList.Application.DTOs;
 using TodoList.Application.Services;
 using TodoList.Domain.Entities;
@@ -7,11 +8,22 @@ using TodoList.TestDataBuilder;
 namespace TodoList.Infrastructure.Services
 {
     public class TodoItemService : ITodoItemService
-    {   
+    {
         #region fields and properties
+
+        private readonly IMapper _mapper;
 
         private readonly List<TodoItem> _items = new();
         private int _nextId = 1;
+
+        #endregion
+
+        #region constructors and initialisors
+
+        public TodoItemService(IMapper mapper)
+        {
+            _mapper = mapper;
+        }
 
         #endregion
 
@@ -23,15 +35,7 @@ namespace TodoList.Infrastructure.Services
 
             _items.Add(todoItem);
 
-            var dto = new TodoItemDto
-            {
-                Id = todoItem.Id,
-                Title = todoItem.Title,
-                Description = todoItem.Description,
-                Status = todoItem.Status.ToString(),
-                CreatedAt = todoItem.CreatedAt
-            };
-
+            var dto = _mapper.Map<TodoItemDto>(todoItem);
             return await Task.FromResult(dto);
         }
 
