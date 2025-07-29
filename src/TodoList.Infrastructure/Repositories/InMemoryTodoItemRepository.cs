@@ -7,6 +7,22 @@ namespace TodoList.Infrastructure.Repositories
     {
         private readonly List<TodoItem> _items = new();
 
+        public InMemoryTodoItemRepository()
+        {
+            _items = new List<TodoItem>
+            {
+                new TodoItem("Buy groceries", "Almond milk, vegetable and nut butter"),
+                new TodoItem("Book car service", "Service due next week, call the dealership"),
+                new TodoItem("Complete assignment", "Finish the backend and Angular UI"),
+                new TodoItem("Walk the dog"),
+                new TodoItem("Read a book", "Read at least 30 pages of 'Clean Architecture'"),
+                new TodoItem("Clean the house"),
+                new TodoItem("Pay electricity bill", "Due date is this Friday"),
+                new TodoItem("Reply to recruiter"),
+                new TodoItem("Workout", "Cardio + core exercises, 30 minutes"),
+                new TodoItem("Plan weekend trip")
+            };
+        }
         public async Task<TodoItem> AddAsync(TodoItem todoItem)
         {
             _items.Add(todoItem);
