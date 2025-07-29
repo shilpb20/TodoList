@@ -29,5 +29,10 @@ namespace TodoList.Infrastructure.Repositories
         {
             return Task.FromResult<IEnumerable<TodoItem>>(_items.ToList());
         }
+
+        public void Clear()
+        {
+            _items.Clear();
+        }
     }
 }

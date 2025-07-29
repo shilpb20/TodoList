@@ -269,7 +269,7 @@ namespace TodoList.UnitTests.Application.Services
             var secondItem = await _service.AddItemAsync(createDto2);
 
             // Act
-            var deletedItem = await _service.DeleteItem(firstItem.Id);
+            var deletedItem = await _service.DeleteItemAsync(firstItem.Id);
             var remainingItems = await _service.GetAllItemsAsync();
 
             // Assert
@@ -286,7 +286,7 @@ namespace TodoList.UnitTests.Application.Services
         public async Task DeleteItem_ShouldReturnNull_WhenItemNotFound()
         {
             // Act
-            var deletedItem = await _service.DeleteItem(Guid.NewGuid());
+            var deletedItem = await _service.DeleteItemAsync(Guid.NewGuid());
 
             // Assert
             deletedItem.Should().BeNull();
@@ -300,8 +300,8 @@ namespace TodoList.UnitTests.Application.Services
             var addedItem = await _service.AddItemAsync(createDto);
 
             // Act
-            var firstDelete = await _service.DeleteItem(addedItem.Id);
-            var secondDelete = await _service.DeleteItem(addedItem.Id);
+            var firstDelete = await _service.DeleteItemAsync(addedItem.Id);
+            var secondDelete = await _service.DeleteItemAsync(addedItem.Id);
 
             // Assert
             firstDelete.Should().NotBeNull();

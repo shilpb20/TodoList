@@ -1,6 +1,26 @@
-@TodoList.Api_HostAddress = http://localhost:5272
+@TodoList_Api_HostAddress = http://localhost:5272
+##@id = 
 
-GET {{TodoList.Api_HostAddress}}/api/todo-list
+### Get all TODO items
+GET {{TodoList_Api_HostAddress}}/api/todo-list
+Accept: application/json
+
+###
+
+### Add a new TODO item
+POST {{TodoList_Api_HostAddress}}/api/todo-list
+Content-Type: application/json
+Accept: application/json
+
+{
+  "title": "Buy groceries",
+  "description": "Almond butter, Blueberries, Oat Milk"
+}
+
+###
+
+### Delete a TODO item by ID
+DELETE {{TodoList_Api_HostAddress}}/api/todo-list/{{id}}
 Accept: application/json
 
 ###

@@ -38,5 +38,19 @@ namespace TodoList.Api.Controllers
             //TODO:Update to CreatedAtAction after implementing location header
             return Ok(result);
         }
+
+        [HttpDelete("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> DeleteTodoItem(Guid id)
+        {
+            var result = await _service.DeleteItemAsync(id);
+            if (result == null)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
     }
 }

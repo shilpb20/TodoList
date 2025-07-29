@@ -1,9 +1,12 @@
 ﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
 using System.Net;
 using System.Net.Http.Json;
 using TodoList.Application.DTOs;
+using TodoList.Application.IRepositories;
 using TodoList.Domain.Enums;
+using TodoList.Infrastructure.Repositories;
 using TodoList.TestDataBuilder.DTOs;
 
 namespace TodoList.IntegrationTests.APIs
@@ -15,6 +18,7 @@ namespace TodoList.IntegrationTests.APIs
         private readonly HttpClient _httpClient;
         private readonly string _todoListApiUrl = "api/todo-list";
 
+        private readonly ITodoItemRepository _repository;
         private readonly TodoItemCreateDtoBuilder _createDtoBuilder = new();
 
         #endregion
@@ -24,6 +28,15 @@ namespace TodoList.IntegrationTests.APIs
         public TodoListApiTests(WebApplicationFactory<Program> factory)
         {
             _httpClient = factory.CreateClient();
+      
+            var scopeFactory = factory.Services.GetRequiredService<IServiceScopeFactory>();
+            using var scope = scopeFactory.CreateScope();
+            _repository = scope.ServiceProvider.GetRequiredService<ITodoItemRepository>();
+
+            if (_repository is InMemoryTodoItemRepository inMemoryRepo)
+            {
+                inMemoryRepo.Clear();
+            }
         }
 
         #endregion
@@ -145,6 +158,48 @@ namespace TodoList.IntegrationTests.APIs
             // Assert
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
+
+        #endregion
+
+        #region delte-items tests
+
+        [Fact]
+        public async Task DeleteTodoItem_ReturnsNoContent_WhenItemExists()
+        {
+            // Arrange
+            var newItem = _createDtoBuilder.Build();
+
+            var postResponse = await _httpClient.PostAsJsonAsync(_todoListApiUrl, newItem);
+            postResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+            var createdItem = await postResponse.Content.ReadFromJsonAsync<TodoItemDto>();
+            createdItem.Should().NotBeNull();
+
+            // Act
+            var deleteResponse = await _httpClient.DeleteAsync($"{_todoListApiUrl}/{createdItem.Id}");
+
+            // Assert
+            deleteResponse.StatusCode.Should().Be(HttpStatusCode.NoContent);
+          
+            var getResponse = await _httpClient.GetAsync(_todoListApiUrl);
+            getResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var items = await getResponse.Content.ReadFromJsonAsync<List<TodoItemDto>>();
+            items.Should().NotContain(i => i.Id == createdItem.Id);
+        }
+
+        [Fact]
+        public async Task DeleteTodoItem_ReturnsNotFound_WhenItemDoesNotExist()
+        {
+            // Arrange
+            var nonExistingId = Guid.NewGuid();
+
+            // Act
+            var response = await _httpClient.DeleteAsync($"{_todoListApiUrl}/{nonExistingId}");
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
 
         #endregion
     }
