@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using TodoList.Domain.Entities;
 using TodoList.Infrastructure.Repositories;
+using Xunit.Abstractions;
 
 namespace TodoList.UnitTests.Application.Repositories
 {
@@ -52,10 +53,12 @@ namespace TodoList.UnitTests.Application.Repositories
             deleted.Should().BeNull();
         }
 
+
         [Fact]
         public async Task GetAllAsync_ShouldReturnAllItems()
         {
-            // Arrange
+            // Arrange    
+            _repo.Clear();
             var item1 = new TodoItem("Item 1");
             var item2 = new TodoItem("Item 2");
             await _repo.AddAsync(item1);
@@ -68,6 +71,17 @@ namespace TodoList.UnitTests.Application.Repositories
             items.Should().HaveCount(2);
             items.Should().Contain(i => i.Id == item1.Id);
             items.Should().Contain(i => i.Id == item2.Id);
+        }
+
+        [Fact]
+        public async Task GetAllAsync_ShouldReturnSeededItems_WhenRepositoryIsNotCleared()
+        {
+            // Arrange
+            // Act
+            var items = await _repo.GetAllAsync();
+
+            // Assert
+            items.Should().HaveCount(10);
         }
     }
 }
