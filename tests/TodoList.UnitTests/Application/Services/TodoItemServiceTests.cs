@@ -148,7 +148,7 @@ namespace TodoList.UnitTests.Application.Services
             var createDto = _createDtoBuilder.Build();
 
             //Act
-            var newItem = await _service.AddItem(createDto);
+            var newItem = await _service.AddItemAsync(createDto);
 
             //Assert
             newItem.Should().NotBeNull();
@@ -169,8 +169,8 @@ namespace TodoList.UnitTests.Application.Services
             var createDto2 = _createDtoBuilder.WithTitle("Task 2").Build();
 
             // Act
-            var firstItem = await _service.AddItem(createDto1);
-            var secondItem = await _service.AddItem(createDto2);
+            var firstItem = await _service.AddItemAsync(createDto1);
+            var secondItem = await _service.AddItemAsync(createDto2);
 
             // Assert
             firstItem.Should().NotBeNull();
@@ -202,8 +202,8 @@ namespace TodoList.UnitTests.Application.Services
             var createDto2 = _createDtoBuilder.WithTitle(title).Build();
 
             // Act
-            var firstItem = await _service.AddItem(createDto1);
-            var secondItem = await _service.AddItem(createDto2);
+            var firstItem = await _service.AddItemAsync(createDto1);
+            var secondItem = await _service.AddItemAsync(createDto2);
 
             // Assert
             firstItem.Should().NotBeNull();
@@ -223,7 +223,7 @@ namespace TodoList.UnitTests.Application.Services
         public async Task GetAll_ShouldReturnEmpty_WhenNoItemsAdded()
         {
             // Act
-            var allItems = await _service.GetAllItems();
+            var allItems = await _service.GetAllItemsAsync();
 
             // Assert
             allItems.Should().NotBeNull();
@@ -237,11 +237,11 @@ namespace TodoList.UnitTests.Application.Services
             var createDto1 = _createDtoBuilder.WithTitle("Task 1").Build();
             var createDto2 = _createDtoBuilder.WithTitle("Task 2").Build();
 
-            await _service.AddItem(createDto1);
-            await _service.AddItem(createDto2);
+            await _service.AddItemAsync(createDto1);
+            await _service.AddItemAsync(createDto2);
 
             // Act
-            var allItems = await _service.GetAllItems();
+            var allItems = await _service.GetAllItemsAsync();
 
             // Assert
             allItems.Should().NotBeNull();
@@ -265,12 +265,12 @@ namespace TodoList.UnitTests.Application.Services
             var createDto1 = _createDtoBuilder.WithTitle("Item 1").Build();
             var createDto2 = _createDtoBuilder.WithTitle("Item 2").Build();
 
-            var firstItem = await _service.AddItem(createDto1);
-            var secondItem = await _service.AddItem(createDto2);
+            var firstItem = await _service.AddItemAsync(createDto1);
+            var secondItem = await _service.AddItemAsync(createDto2);
 
             // Act
             var deletedItem = await _service.DeleteItem(firstItem.Id);
-            var remainingItems = await _service.GetAllItems();
+            var remainingItems = await _service.GetAllItemsAsync();
 
             // Assert
             deletedItem.Should().BeEquivalentTo(firstItem);
@@ -297,7 +297,7 @@ namespace TodoList.UnitTests.Application.Services
         {
             // Arrange
             var createDto = _createDtoBuilder.WithTitle("Item").Build();
-            var addedItem = await _service.AddItem(createDto);
+            var addedItem = await _service.AddItemAsync(createDto);
 
             // Act
             var firstDelete = await _service.DeleteItem(addedItem.Id);

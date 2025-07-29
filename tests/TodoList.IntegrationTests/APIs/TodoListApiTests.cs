@@ -57,7 +57,7 @@ namespace TodoList.IntegrationTests.APIs
             var response = await _httpClient.PostAsJsonAsync(_todoListApiUrl, addItem);
 
             //Assert
-            response.StatusCode.Should().Be(HttpStatusCode.Created);
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
 
             var createdItem = await response.Content.ReadFromJsonAsync<TodoItemDto>();
             createdItem.Should().NotBeNull();
@@ -68,6 +68,82 @@ namespace TodoList.IntegrationTests.APIs
 
             createdItem.Title.Should().Be(addItem.Title);
             createdItem.Description.Should().Be(addItem.Description);
+        }
+
+        [Fact]
+        public async Task AddTodoItem_SuccessfullyAddsItem_WhenTitleAndDescriptionAreMaxLength()
+        {
+            //Arrange
+            var addItem = _createDtoBuilder.WithMaxTitleLength().WithMaxDescriptionLength().Build();
+
+            //Act
+            var response = await _httpClient.PostAsJsonAsync(_todoListApiUrl, addItem);
+
+            //Assert
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var createdItem = await response.Content.ReadFromJsonAsync<TodoItemDto>();
+            createdItem.Should().NotBeNull();
+
+            createdItem.Id.Should().NotBe(Guid.Empty);
+            createdItem.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(0.5));
+            createdItem.Status.Should().Be(TodoStatus.Pending.ToString());
+
+            createdItem.Title.Should().Be(addItem.Title);
+            createdItem.Description.Should().Be(addItem.Description);
+        }
+
+
+        [Fact]
+        public async Task AddTodoItem_ReturnsBadRequest_WhenBodyIsNull()
+        {
+            // Arrange
+            var content = new StringContent("null", System.Text.Encoding.UTF8, "application/json");
+
+            // Act
+            var response = await _httpClient.PostAsync(_todoListApiUrl, content);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task AddTodoItem_ReturnsBadRequest_WhenTitleIsTooShort()
+        {
+            // Arrange
+            var invalidItem = _createDtoBuilder.WithShortTitle().Build();
+
+            // Act
+            var response = await _httpClient.PostAsJsonAsync(_todoListApiUrl, invalidItem);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task AddTodoItem_ReturnsBadRequest_WhenTitleIsTooLong()
+        {
+            // Arrange
+            var invalidItem = _createDtoBuilder.WithLongTitle().Build();
+
+            // Act
+            var response = await _httpClient.PostAsJsonAsync(_todoListApiUrl, invalidItem);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task AddTodoItem_ReturnsBadRequest_WhenDescriptionIsTooLong()
+        {
+            // Arrange
+            var invalidItem = _createDtoBuilder.WithLongDescription().Build();
+
+            // Act
+            var response = await _httpClient.PostAsJsonAsync(_todoListApiUrl, invalidItem);
+
+            // Assert
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         }
 
         #endregion

@@ -28,6 +28,48 @@ namespace TodoList.TestDataBuilder.DTOs
             return this;
         }
 
+        public TodoItemCreateDtoBuilder WithEmptyTitle()
+        {
+            _title = string.Empty;
+            return this;
+        }
+
+        public TodoItemCreateDtoBuilder WithNullTitle()
+        {
+            _title = null!;
+            return this;
+        }
+
+        public TodoItemCreateDtoBuilder WithShortTitle()
+        {
+            _title = "ab";
+            return this;
+        }
+
+        public TodoItemCreateDtoBuilder WithLongTitle()
+        {
+            _title = new string('a', 101);
+            return this;
+        }
+
+        public TodoItemCreateDtoBuilder WithLongDescription()
+        {
+            _description = new string('a', 1001);
+            return this;
+        }
+
+        public TodoItemCreateDtoBuilder WithMaxTitleLength()
+        {
+            _title = new string('a', 100);
+            return this;
+        }
+
+        public TodoItemCreateDtoBuilder WithMaxDescriptionLength()
+        {
+            _description = new string('a', 1000);
+            return this;
+        }
+
         public TodoItemCreateDto Build()
         {
             return new TodoItemCreateDto

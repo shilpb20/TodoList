@@ -28,7 +28,7 @@ namespace TodoList.Infrastructure.Services
 
         #region add-item
 
-        public async Task<TodoItemDto> AddItem(TodoItemCreateDto createDto)
+        public async Task<TodoItemDto> AddItemAsync(TodoItemCreateDto createDto)
         {
             var todoItem = _mapper.Map<TodoItem>(createDto);
             await _repository.AddAsync(todoItem);
@@ -39,7 +39,7 @@ namespace TodoList.Infrastructure.Services
 
         #region get-all items
 
-        public async Task<IEnumerable<TodoItemDto>> GetAllItems()
+        public async Task<IEnumerable<TodoItemDto>> GetAllItemsAsync()
         {
             var todoItems = await _repository.GetAllAsync();
             var dtos = _mapper.Map<IEnumerable<TodoItemDto>>(todoItems);
