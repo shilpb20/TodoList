@@ -4,17 +4,18 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using TodoList.Application.DTOs;
 using TodoList.Application.IRepositories;
-using TodoList.Application.Services;
+using TodoList.Application.IServices;
 using TodoList.Domain.Entities;
-using TodoList.Infrastructure.Mapper;
 using TodoList.Infrastructure.Services;
-using TodoList.TestDataBuilder;
+using TodoList.TestDataBuilder.DTOs;
 
 namespace TodoList.UnitTests.Application.Services
 {
     public class TodoItemServiceTests
     {
         #region fields and properties
+
+        private readonly List<TodoItem> _items = new();
 
         private readonly ITodoItemService _service;
         private readonly TodoItemCreateDtoBuilder _createDtoBuilder = new();
@@ -42,8 +43,28 @@ namespace TodoList.UnitTests.Application.Services
         private void SetupRepositoryBehaviors()
         {
             _mockRepo
-               .Setup(repo => repo.AddAsync(It.IsAny<TodoItem>()))
-               .ReturnsAsync((TodoItem todo) => todo);
+             .Setup(repo => repo.AddAsync(It.IsAny<TodoItem>()))
+             .ReturnsAsync((TodoItem todo) =>
+             {
+                 _items.Add(todo);
+                 return todo;
+             });
+
+            _mockRepo
+               .Setup(repo => repo.DeleteAsync(It.IsAny<Guid>()))
+               .ReturnsAsync((Guid id) =>
+               {
+                   var item = _items.FirstOrDefault(x => x.Id == id);
+                   if (item != null)
+                   {
+                       _items.Remove(item);
+                   }
+                   return item;
+               });
+
+            _mockRepo
+                .Setup(repo => repo.GetAllAsync())
+                .ReturnsAsync(() => _items.ToList());
         }
 
         private void SetupMapperBehaviors()
@@ -61,6 +82,59 @@ namespace TodoList.UnitTests.Application.Services
                     Description = item.Description,
                     Status = item.Status.ToString()
                 });
+
+            _mockMapper
+                 .Setup(m => m.Map<IEnumerable<TodoItemDto>>(It.IsAny<IEnumerable<TodoItem>>()))
+                 .Returns((IEnumerable<TodoItem> items) => items.Select(item => new TodoItemDto
+                 {
+                     Id = item.Id,
+                     Title = item.Title,
+                     Description = item.Description,
+                     Status = item.Status.ToString(),
+                     CreatedAt = item.CreatedAt
+                 }).ToList());
+        }
+
+        #endregion
+
+        #region object-creation tests
+
+        [Fact]
+        public void CreateObject_ShouldThrowArgumentNullException_IfMapperIsNull()
+        {
+            // Arrange
+            IMapper? nullMapper = null;
+
+            // Act
+            Action act = () => new TodoItemService(nullMapper!, _mockRepo.Object);
+
+            // Assert
+            var ex = Assert.Throws<ArgumentNullException>(act);
+            Assert.Equal("mapper", ex.ParamName);
+        }
+
+        [Fact]
+        public void CreateObject_ShouldThrowArgumentNullException_IfRepositoryIsNull()
+        {
+            // Arrange
+            ITodoItemRepository? nullRepo = null;
+
+            // Act
+            Action act = () => new TodoItemService(_mockMapper.Object, nullRepo!);
+
+            // Assert
+            var ex = Assert.Throws<ArgumentNullException>(act);
+            Assert.Equal("repository", ex.ParamName);
+        }
+
+        [Fact]
+        public void CreateObject_ShouldNotThrowException_WhenParametersAreValid()
+        {
+            // Act
+            var ex = Record.Exception(() => new TodoItemService(_mockMapper.Object, _mockRepo.Object));
+
+            // Assert
+            Assert.Null(ex);
         }
 
         #endregion
@@ -178,7 +252,6 @@ namespace TodoList.UnitTests.Application.Services
 
             itemsList.Should().Contain(i => i.Title == "Task 1");
             itemsList.Should().Contain(i => i.Title == "Task 2");
-
         }
 
         #endregion
@@ -192,19 +265,21 @@ namespace TodoList.UnitTests.Application.Services
             var createDto1 = _createDtoBuilder.WithTitle("Item 1").Build();
             var createDto2 = _createDtoBuilder.WithTitle("Item 2").Build();
 
-            var item1 = await _service.AddItem(createDto1);
-            var item2 = await _service.AddItem(createDto2);
+            var firstItem = await _service.AddItem(createDto1);
+            var secondItem = await _service.AddItem(createDto2);
 
             // Act
-            var deletedItem = await _service.DeleteItem(item1.Id);
+            var deletedItem = await _service.DeleteItem(firstItem.Id);
             var remainingItems = await _service.GetAllItems();
 
             // Assert
-            _mockRepo.Verify(repo => repo.AddAsync(It.IsAny<TodoItem>()), Times.Once);
+            deletedItem.Should().BeEquivalentTo(firstItem);
+            remainingItems.Should().NotContain(i => i.Id == firstItem.Id);
+            remainingItems.Should().ContainSingle(i => i.Id == secondItem.Id);
 
-            deletedItem.Should().BeEquivalentTo(item1);
-            remainingItems.Should().NotContain(i => i.Id == item1.Id);
-            remainingItems.Should().ContainSingle(i => i.Id == item2.Id);
+            _mockRepo.Verify(r => r.DeleteAsync(It.IsAny<Guid>()), Times.Once);
+
+            _mockMapper.Verify(m => m.Map<TodoItemDto>(It.IsAny<TodoItem>()), Times.Exactly(3));
         }
 
         [Fact]
