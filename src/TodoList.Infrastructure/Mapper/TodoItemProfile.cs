@@ -14,6 +14,8 @@ namespace TodoList.Infrastructure.Mapper
     {
         public TodoItemProfile()
         {
+            CreateMap<TodoItem, TodoItemCreateDto>();
+
             CreateMap<TodoItem, TodoItemDto>()
                 .ForMember(destination => destination.Status, opt => opt.MapFrom(src => src.Status.ToString()));
         }

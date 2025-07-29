@@ -2,6 +2,7 @@
 using FluentAssertions;
 using Microsoft.Extensions.Logging;
 using Moq;
+using TodoList.Application.DTOs;
 using TodoList.Application.IRepositories;
 using TodoList.Application.Services;
 using TodoList.Domain.Entities;
@@ -17,6 +18,8 @@ namespace TodoList.UnitTests.Application.Services
 
         private readonly ITodoItemService _service;
         private readonly TodoItemCreateDtoBuilder _createDtoBuilder = new();
+
+        private readonly Mock<IMapper> _mockMapper;
         private readonly Mock<ITodoItemRepository> _mockRepo;
 
         #endregion
@@ -27,19 +30,37 @@ namespace TodoList.UnitTests.Application.Services
         {
             var loggerFactory = LoggerFactory.Create(builder => { });
 
-            var mapperConfig = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<TodoItemProfile>();
-            }, loggerFactory);
-
-            var mapper = mapperConfig.CreateMapper();
-
+            _mockMapper = new Mock<IMapper>();
             _mockRepo = new Mock<ITodoItemRepository>();
-            _service = new TodoItemService(mapper, _mockRepo.Object);
 
+            _service = new TodoItemService(_mockMapper.Object, _mockRepo.Object);
+
+            SetupMapperBehaviors();
+            SetupRepositoryBehaviors();
+        }
+
+        private void SetupRepositoryBehaviors()
+        {
             _mockRepo
                .Setup(repo => repo.AddAsync(It.IsAny<TodoItem>()))
                .ReturnsAsync((TodoItem todo) => todo);
+        }
+
+        private void SetupMapperBehaviors()
+        {
+            _mockMapper
+               .Setup(m => m.Map<TodoItem>(It.IsAny<TodoItemCreateDto>()))
+               .Returns((TodoItemCreateDto dto) => new TodoItem(dto.Title, dto.Description));
+
+            _mockMapper
+                .Setup(m => m.Map<TodoItemDto>(It.IsAny<TodoItem>()))
+                .Returns((TodoItem item) => new TodoItemDto
+                {
+                    Id = item.Id,
+                    Title = item.Title,
+                    Description = item.Description,
+                    Status = item.Status.ToString()
+                });
         }
 
         #endregion
@@ -60,7 +81,9 @@ namespace TodoList.UnitTests.Application.Services
             newItem.Title.Should().Be(createDto.Title);
             newItem.Description.Should().Be(createDto.Description);
             newItem.Status.Should().Be("Pending");
-           
+
+            _mockMapper.Verify(m => m.Map<TodoItem>(createDto), Times.Once);
+            _mockMapper.Verify(m => m.Map<TodoItemDto>(It.IsAny<TodoItem>()), Times.Once);
             _mockRepo.Verify(repo => repo.AddAsync(It.Is<TodoItem>(x => x.Title == createDto.Title)), Times.Once);
         }
 
@@ -72,19 +95,24 @@ namespace TodoList.UnitTests.Application.Services
             var createDto2 = _createDtoBuilder.WithTitle("Task 2").Build();
 
             // Act
-            var newItem1 = await _service.AddItem(createDto1);
-            var newItem2 = await _service.AddItem(createDto2);
+            var firstItem = await _service.AddItem(createDto1);
+            var secondItem = await _service.AddItem(createDto2);
 
             // Assert
-            newItem1.Should().NotBeNull();
-            newItem2.Should().NotBeNull();
-            newItem2.Id.Should().NotBe(newItem1.Id);
+            firstItem.Should().NotBeNull();
+            secondItem.Should().NotBeNull();
+            secondItem.Id.Should().NotBe(firstItem.Id);
+            firstItem.Id.Should().NotBeEmpty();
 
-            newItem1.Title.Should().Be(createDto1.Title);
-            newItem1.Status.Should().Be("Pending");
+            firstItem.Title.Should().Be(createDto1.Title);
+            firstItem.Status.Should().Be("Pending");
 
-            newItem2.Title.Should().Be(createDto2.Title);
-            newItem2.Status.Should().Be("Pending");
+            secondItem.Title.Should().Be(createDto2.Title);
+            secondItem.Status.Should().Be("Pending");
+
+            _mockMapper.Verify(m => m.Map<TodoItem>(createDto1), Times.Once);
+            _mockMapper.Verify(m => m.Map<TodoItem>(createDto2), Times.Once);
+            _mockMapper.Verify(m => m.Map<TodoItemDto>(It.IsAny<TodoItem>()), Times.Exactly(2));
 
             _mockRepo.Verify(repo => repo.AddAsync(It.Is<TodoItem>(x => x.Title == "Task 1")), Times.Once);
             _mockRepo.Verify(repo => repo.AddAsync(It.Is<TodoItem>(x => x.Title == "Task 2")), Times.Once);
@@ -100,17 +128,17 @@ namespace TodoList.UnitTests.Application.Services
             var createDto2 = _createDtoBuilder.WithTitle(title).Build();
 
             // Act
-            var newItem1 = await _service.AddItem(createDto1);
-            var newItem2 = await _service.AddItem(createDto2);
+            var firstItem = await _service.AddItem(createDto1);
+            var secondItem = await _service.AddItem(createDto2);
 
             // Assert
-            newItem1.Should().NotBeNull();
-            newItem2.Should().NotBeNull();
-            newItem1.Title.Should().Be(title);
-            newItem2.Title.Should().Be(title);
-            newItem1.Id.Should().NotBe(newItem2.Id);
+            firstItem.Should().NotBeNull();
+            secondItem.Should().NotBeNull();
+            firstItem.Title.Should().Be(title);
+            secondItem.Title.Should().Be(title);
+            firstItem.Id.Should().NotBe(secondItem.Id);
 
-            _mockRepo.Verify(repo => repo.AddAsync(It.Is<TodoItem>(x => x.Title == "Task 1")), Times.Exactly(2));
+            _mockRepo.Verify(repo => repo.AddAsync(It.Is<TodoItem>(x => x.Title == "Duplicate Task")), Times.Exactly(2));
         }
 
         #endregion
