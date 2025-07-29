@@ -32,7 +32,7 @@ namespace TodoList.Infrastructure.Services
 
         public async Task<TodoItemDto> AddItem(TodoItemCreateDto createDto)
         {
-            var todoItem = new TodoItem(createDto.Title, createDto.Description);
+            var todoItem = _mapper.Map<TodoItem>(createDto);
 
             _repository.AddAsync(todoItem);
 
