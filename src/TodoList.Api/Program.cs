@@ -21,9 +21,8 @@ var config = new MapperConfiguration(cfg =>
 var mapper = config.CreateMapper();
 
 builder.Services.AddSingleton<IMapper>(mapper);
-
 builder.Services.AddScoped<ITodoItemService, TodoItemService>();
-builder.Services.AddScoped<ITodoItemRepository, InMemoryTodoItemRepository>();
+builder.Services.AddSingleton<ITodoItemRepository, InMemoryTodoItemRepository>();
 
 var app = builder.Build();
 

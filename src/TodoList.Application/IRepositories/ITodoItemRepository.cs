@@ -7,5 +7,6 @@ namespace TodoList.Application.IRepositories
         Task<TodoItem> AddAsync(TodoItem todoItem);
         Task<TodoItem?> DeleteAsync(Guid id);
         Task<IEnumerable<TodoItem>> GetAllAsync();
+
     }
 }

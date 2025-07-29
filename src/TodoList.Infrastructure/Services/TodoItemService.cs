@@ -50,7 +50,7 @@ namespace TodoList.Infrastructure.Services
 
         #region delete-item
 
-        public async Task<TodoItemDto?> DeleteItem(Guid id)
+        public async Task<TodoItemDto?> DeleteItemAsync(Guid id)
         {
             var result = await _repository.DeleteAsync(id);
             if (result == null)
