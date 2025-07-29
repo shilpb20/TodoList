@@ -14,9 +14,7 @@ namespace TodoList.Infrastructure.Services
 
         private readonly IMapper _mapper;
         private readonly ITodoItemRepository _repository;
-
         private readonly List<TodoItem> _items = new();
-        private int _nextId = 1;
 
         #endregion
 
@@ -34,9 +32,9 @@ namespace TodoList.Infrastructure.Services
 
         public async Task<TodoItemDto> AddItem(TodoItemCreateDto createDto)
         {
-            var todoItem = new TodoItem(_nextId++, createDto.Title, createDto.Description);
+            var todoItem = new TodoItem(createDto.Title, createDto.Description);
 
-            _items.Add(todoItem);
+            _repository.AddAsync(todoItem);
 
             var dto = _mapper.Map<TodoItemDto>(todoItem);
             return await Task.FromResult(dto);
@@ -56,7 +54,7 @@ namespace TodoList.Infrastructure.Services
 
         #region delete-item
 
-        public Task<TodoItemDto?> DeleteItem(int id)
+        public Task<TodoItemDto?> DeleteItem(Guid id)
         {
             var item = _items.FirstOrDefault(i => i.Id == id);
             if (item is null)

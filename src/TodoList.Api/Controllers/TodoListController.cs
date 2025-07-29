@@ -21,7 +21,7 @@ namespace TodoList.Api.Controllers
         {
             var result = new TodoItemDto()
             {
-                Id = 1,
+                Id = Guid.NewGuid(),
                 Title = "Default title",
                 Description = "Default description",
                 Status = "Pending",

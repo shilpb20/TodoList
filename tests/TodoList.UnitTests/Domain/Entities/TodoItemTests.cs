@@ -19,15 +19,14 @@ namespace TodoList.UnitTests.Domain.Entities
         public void CreateObject_ShouldCreateTodoItem_WithValidData()
         {
             //Arrange
-            int id = 1;
             string title = "Write backend";
             string description = "Finish API implementation";
 
             //Act
-            var todoItem = new TodoItem(id, title, description);
+            var todoItem = new TodoItem(title, description);
 
             //Assert
-            todoItem.Id.Should().Be(id);
+            todoItem.Id.Should().NotBe(Guid.Empty);
             todoItem.Title.Should().Be(title);
             todoItem.Description.Should().Be(description);
             todoItem.Status.Should().Be(TodoStatus.Pending);
@@ -38,14 +37,13 @@ namespace TodoList.UnitTests.Domain.Entities
         public void CreateObject_ShouldCreateTodoItem_WithOptionalDescription()
         {
             // Arrange
-            int id = 1;
             string title = "Write backend";
 
             // Act
-            var todoItem = new TodoItem(id, title);
+            var todoItem = new TodoItem(title);
 
             // Assert
-            todoItem.Id.Should().Be(id);
+            todoItem.Id.Should().NotBe(Guid.Empty);
             todoItem.Title.Should().Be(title);
             todoItem.Description.Should().BeNullOrEmpty();
             todoItem.Status.Should().Be(TodoStatus.Pending);
@@ -56,12 +54,11 @@ namespace TodoList.UnitTests.Domain.Entities
         public void CreateObject_ShouldTrimTitle_WhenTitleHasLeadingOrTrailingSpaces()
         {
             // Arrange
-            int id = 1;
             string titleWithSpaces = "  Trim this title  ";
             string expectedTitle = "Trim this title";
 
             // Act
-            var todoItem = new TodoItem(id, titleWithSpaces);
+            var todoItem = new TodoItem(titleWithSpaces);
 
             // Assert
             todoItem.Title.Should().Be(expectedTitle);
@@ -75,10 +72,8 @@ namespace TodoList.UnitTests.Domain.Entities
         public void CreateObject_ShouldThrowArgumentException_WhenTitleIsWhitespaceOnly(string title)
         {
             // Arrange
-            int id = 1;
-
             // Act
-            Action act = () => new TodoItem(id, title);
+            Action act = () => new TodoItem(title);
 
             // Assert
             act.Should().Throw<ArgumentException>()
@@ -89,13 +84,12 @@ namespace TodoList.UnitTests.Domain.Entities
         public void CreateObject_ShouldTrimDescription_WhenDescriptionHasLeadingOrTrailingSpaces()
         {
             // Arrange
-            int id = 1;
             string title = "Task";
             string descriptionWithSpaces = "  some details here   ";
             string expectedDescription = "some details here";
 
             // Act
-            var todoItem = new TodoItem(id, title, descriptionWithSpaces);
+            var todoItem = new TodoItem(title, descriptionWithSpaces);
 
             // Assert
             todoItem.Description.Should().Be(expectedDescription);
@@ -105,11 +99,10 @@ namespace TodoList.UnitTests.Domain.Entities
         public void CreateObject_ShouldSetEmptyDescription_WhenDescriptionIsNull()
         {
             // Arrange
-            int id = 1;
             string title = "Task";
 
             // Act
-            var todoItem = new TodoItem(id, title, null);
+            var todoItem = new TodoItem(title, null);
 
             // Assert
             todoItem.Description.Should().BeEmpty();
@@ -125,24 +118,8 @@ namespace TodoList.UnitTests.Domain.Entities
         [InlineData(" ")]
         public void CreateObject_ShouldThrowArgumentException_WhenTitleIsInvalid(string invalidTitle)
         {
-            Action act = () => new TodoItem(1, invalidTitle);
+            Action act = () => new TodoItem(invalidTitle);
             act.Should().Throw<ArgumentException>();
-        }
-
-        [Fact]
-        public void CreateObject_ShouldThrowArgumentOutOfRangeException_WhenIdIsInvalid()
-        {
-            Action act = () => new TodoItem(0, "Valid title");
-            act.Should().Throw<ArgumentOutOfRangeException>();
-        }
-
-        [Theory]
-        [InlineData(-1)]
-        [InlineData(int.MinValue)]
-        public void CreateObject_ShouldThrowArgumentOutOfRangeException_WhenIdIsNegative(int invalidId)
-        {
-            Action act = () => new TodoItem(invalidId, "Valid title");
-            act.Should().Throw<ArgumentOutOfRangeException>();
         }
 
         #endregion

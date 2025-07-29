@@ -11,13 +11,13 @@ namespace TodoList.TestDataBuilder
 {
     public class TodoItemDtoBuilder
     {
-        private int _id = 1;
+        private Guid _id = Guid.NewGuid();
         private string _title = "Default title";
         private string _description = "Default description";
         private DateTime _createdAt = DateTime.UtcNow;
         private TodoStatus _status = TodoStatus.Pending;
 
-        public TodoItemDtoBuilder WithId(int id)
+        public TodoItemDtoBuilder WithId(Guid id)
         {
             _id = id;
             return this;

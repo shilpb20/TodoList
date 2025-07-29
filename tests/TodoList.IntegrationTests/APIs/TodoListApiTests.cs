@@ -62,7 +62,7 @@ namespace TodoList.IntegrationTests.APIs
             var createdItem = await response.Content.ReadFromJsonAsync<TodoItemDto>();
             createdItem.Should().NotBeNull();
 
-            createdItem.Id.Should().Be(1);
+            createdItem.Id.Should().NotBe(Guid.Empty);
             createdItem.CreatedAt.Should().BeCloseTo(DateTime.UtcNow, TimeSpan.FromMinutes(0.5));
             createdItem.Status.Should().Be(TodoStatus.Pending.ToString());
 
