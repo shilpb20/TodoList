@@ -2,9 +2,8 @@
 using AutoMapper;
 using TodoList.Application.DTOs;
 using TodoList.Application.IRepositories;
-using TodoList.Application.Services;
+using TodoList.Application.IServices;
 using TodoList.Domain.Entities;
-using TodoList.TestDataBuilder;
 
 namespace TodoList.Infrastructure.Services
 {
@@ -14,7 +13,6 @@ namespace TodoList.Infrastructure.Services
 
         private readonly IMapper _mapper;
         private readonly ITodoItemRepository _repository;
-        private readonly List<TodoItem> _items = new();
 
         #endregion
 
@@ -22,8 +20,8 @@ namespace TodoList.Infrastructure.Services
 
         public TodoItemService(IMapper mapper, ITodoItemRepository repository)
         {
-            _mapper = mapper;
-            _repository = repository;
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _repository = repository ?? throw new ArgumentNullException(nameof(repository));
         }
 
         #endregion
@@ -33,37 +31,35 @@ namespace TodoList.Infrastructure.Services
         public async Task<TodoItemDto> AddItem(TodoItemCreateDto createDto)
         {
             var todoItem = _mapper.Map<TodoItem>(createDto);
-
-            _repository.AddAsync(todoItem);
-
-            var dto = _mapper.Map<TodoItemDto>(todoItem);
-            return await Task.FromResult(dto);
+            await _repository.AddAsync(todoItem);
+            return  _mapper.Map<TodoItemDto>(todoItem); 
         }
 
         #endregion
 
         #region get-all items
 
-        public Task<IEnumerable<TodoItemDto>> GetAllItems()
+        public async Task<IEnumerable<TodoItemDto>> GetAllItems()
         {
-            var dtos = _mapper.Map<IEnumerable<TodoItemDto>>(_items);
-            return Task.FromResult(dtos);
+            var todoItems = await _repository.GetAllAsync();
+            var dtos = _mapper.Map<IEnumerable<TodoItemDto>>(todoItems);
+            return dtos;
         }
 
         #endregion
 
         #region delete-item
 
-        public Task<TodoItemDto?> DeleteItem(Guid id)
+        public async Task<TodoItemDto?> DeleteItem(Guid id)
         {
-            var item = _items.FirstOrDefault(i => i.Id == id);
-            if (item is null)
-                return Task.FromResult<TodoItemDto?>(null);
+            var result = await _repository.DeleteAsync(id);
+            if (result == null)
+            {
+                return null;
+            }
 
-            _items.Remove(item);
-            var deletedDto = _mapper.Map<TodoItemDto>(item);
-
-            return Task.FromResult<TodoItemDto?>(deletedDto);
+            var deletedDto = _mapper.Map<TodoItemDto>(result);
+            return deletedDto;
         }
 
         #endregion
