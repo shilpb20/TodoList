@@ -1,7 +1,6 @@
 ﻿using TodoList.Application.DTOs;
-using TodoList.TestDataBuilder;
 
-namespace TodoList.Application.Services
+namespace TodoList.Application.IServices
 {
     public interface ITodoItemService
     {

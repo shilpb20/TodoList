@@ -1,14 +1,9 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
 using AutoMapper;
-
-using TodoList.Infrastructure.Mapper;
-using TodoList.Application.Services;
-using TodoList.Infrastructure.Services;
 using TodoList.Application.IRepositories;
+using TodoList.Application.IServices;
+using TodoList.Infrastructure.Mapper;
 using TodoList.Infrastructure.Repositories;
+using TodoList.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
