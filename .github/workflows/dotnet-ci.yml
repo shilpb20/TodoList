@@ -1,13 +1,13 @@
 name: .NET CI
 
 on:
+  workflow_dispatch:        # allows manual trigger
   push:
     branches:
       - master
   pull_request:
     branches:
       - master
-
 jobs:
   build-and-test:
     runs-on: ubuntu-latest
