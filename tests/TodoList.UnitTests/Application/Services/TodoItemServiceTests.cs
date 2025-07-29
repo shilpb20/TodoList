@@ -6,7 +6,6 @@ using TodoList.Application.IRepositories;
 using TodoList.Application.Services;
 using TodoList.Domain.Entities;
 using TodoList.Infrastructure.Mapper;
-using TodoList.Infrastructure.Repositories;
 using TodoList.Infrastructure.Services;
 using TodoList.TestDataBuilder;
 
@@ -17,7 +16,7 @@ namespace TodoList.UnitTests.Application.Services
         #region fields and properties
 
         private readonly ITodoItemService _service;
-        private readonly TodoItemCreateDtoBuilder _createDtoBuilder = new ();
+        private readonly TodoItemCreateDtoBuilder _createDtoBuilder = new();
         private readonly Mock<ITodoItemRepository> _mockRepo;
 
         #endregion
@@ -37,6 +36,10 @@ namespace TodoList.UnitTests.Application.Services
 
             _mockRepo = new Mock<ITodoItemRepository>();
             _service = new TodoItemService(mapper, _mockRepo.Object);
+
+            _mockRepo
+               .Setup(repo => repo.AddAsync(It.IsAny<TodoItem>()))
+               .ReturnsAsync((TodoItem todo) => todo);
         }
 
         #endregion
@@ -57,6 +60,8 @@ namespace TodoList.UnitTests.Application.Services
             newItem.Title.Should().Be(createDto.Title);
             newItem.Description.Should().Be(createDto.Description);
             newItem.Status.Should().Be("Pending");
+           
+            _mockRepo.Verify(repo => repo.AddAsync(It.Is<TodoItem>(x => x.Title == createDto.Title)), Times.Once);
         }
 
         [Fact]
@@ -80,9 +85,12 @@ namespace TodoList.UnitTests.Application.Services
 
             newItem2.Title.Should().Be(createDto2.Title);
             newItem2.Status.Should().Be("Pending");
+
+            _mockRepo.Verify(repo => repo.AddAsync(It.Is<TodoItem>(x => x.Title == "Task 1")), Times.Once);
+            _mockRepo.Verify(repo => repo.AddAsync(It.Is<TodoItem>(x => x.Title == "Task 2")), Times.Once);
         }
 
-        
+
         [Fact]
         public async Task AddItem_ShouldAllowDuplicateTitles()
         {
@@ -101,6 +109,8 @@ namespace TodoList.UnitTests.Application.Services
             newItem1.Title.Should().Be(title);
             newItem2.Title.Should().Be(title);
             newItem1.Id.Should().NotBe(newItem2.Id);
+
+            _mockRepo.Verify(repo => repo.AddAsync(It.Is<TodoItem>(x => x.Title == "Task 1")), Times.Exactly(2));
         }
 
         #endregion
@@ -162,6 +172,8 @@ namespace TodoList.UnitTests.Application.Services
             var remainingItems = await _service.GetAllItems();
 
             // Assert
+            _mockRepo.Verify(repo => repo.AddAsync(It.IsAny<TodoItem>()), Times.Once);
+
             deletedItem.Should().BeEquivalentTo(item1);
             remainingItems.Should().NotContain(i => i.Id == item1.Id);
             remainingItems.Should().ContainSingle(i => i.Id == item2.Id);
