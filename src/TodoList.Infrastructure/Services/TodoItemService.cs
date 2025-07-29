@@ -1,6 +1,7 @@
 ﻿
 using AutoMapper;
 using TodoList.Application.DTOs;
+using TodoList.Application.IRepositories;
 using TodoList.Application.Services;
 using TodoList.Domain.Entities;
 using TodoList.TestDataBuilder;
@@ -12,6 +13,7 @@ namespace TodoList.Infrastructure.Services
         #region fields and properties
 
         private readonly IMapper _mapper;
+        private readonly ITodoItemRepository _repository;
 
         private readonly List<TodoItem> _items = new();
         private int _nextId = 1;
@@ -20,9 +22,10 @@ namespace TodoList.Infrastructure.Services
 
         #region constructors and initialisors
 
-        public TodoItemService(IMapper mapper)
+        public TodoItemService(IMapper mapper, ITodoItemRepository repository)
         {
             _mapper = mapper;
+            _repository = repository;
         }
 
         #endregion

@@ -5,6 +5,10 @@ using Microsoft.Extensions.DependencyInjection;
 using AutoMapper;
 
 using TodoList.Infrastructure.Mapper;
+using TodoList.Application.Services;
+using TodoList.Infrastructure.Services;
+using TodoList.Application.IRepositories;
+using TodoList.Infrastructure.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +26,9 @@ var config = new MapperConfiguration(cfg =>
 var mapper = config.CreateMapper();
 
 builder.Services.AddSingleton<IMapper>(mapper);
+
+builder.Services.AddScoped<ITodoItemService, TodoItemService>();
+builder.Services.AddScoped<ITodoItemRepository, InMemoryTodoItemRepository>();
 
 var app = builder.Build();
 
