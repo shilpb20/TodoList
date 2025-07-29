@@ -1,15 +1,12 @@
 ﻿using FluentAssertions;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.VisualBasic;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
-using System.ComponentModel;
 using System.Net;
 using System.Net.Http.Json;
 using TodoList.Application.DTOs;
-using TodoList.Domain;
+using TodoList.Domain.Enums;
 using TodoList.TestDataBuilder;
 
-namespace TodoList.Api.Tests.Controllers
+namespace TodoList.IntegrationTests.APIs
 {
     public class TodoListApiTests : IClassFixture<WebApplicationFactory<Program>>
     {
@@ -18,8 +15,7 @@ namespace TodoList.Api.Tests.Controllers
         private readonly HttpClient _httpClient;
         private readonly string _todoListApiUrl = "api/todo-list";
 
-        private TodoItemCreateDtoBuilder _createDtoBuilder = new TodoItemCreateDtoBuilder();
-        private TodoItemDtoBuilder _dtoBuilder = new TodoItemDtoBuilder();
+        private readonly TodoItemCreateDtoBuilder _createDtoBuilder = new();
 
         #endregion
 

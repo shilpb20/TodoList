@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 using TodoList.Domain.Entities;
 
 using FluentAssertions;
+using TodoList.Domain;
+using TodoList.Domain.Enums;
 
-namespace TodoList.Domain.Tests
+namespace TodoList.UnitTests.Domain.Entities
 {
     public class TodoItemTests
     {
