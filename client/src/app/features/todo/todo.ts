@@ -66,9 +66,19 @@ onAdd(): void {
   });
 }
 
-  deleteTask(index: number): void {
-    this.tasks.splice(index, 1);
+deleteTask(index: number): void {
+  const task = this.tasks[index];
 
-  this.showGrowl('Task deleted successfully!');
-  }
+  this.todoService.delete(task.id).subscribe({
+    next: () => {
+      this.tasks.splice(index, 1);
+      this.showGrowl('Task deleted successfully!');
+    },
+    error: (err) => {
+      console.error('Error deleting todo:', err);
+      alert('Failed to delete todo item.');
+    }
+  });
+}
+
 }
