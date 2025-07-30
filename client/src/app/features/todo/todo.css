@@ -23,6 +23,28 @@
   gap: 2rem;
 }
 
+.toast-growl {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background-color: #28a745;
+  color: white;
+  padding: 15px 25px;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  font-weight: 600;
+  font-size: 1rem;
+  z-index: 1000;
+  animation: fadeInOut 3s ease forwards;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(-10px); }
+  10%, 90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-10px); }
+}
+
+
 .left-panel,
 .right-panel {
   display: flex;
@@ -33,6 +55,7 @@
   flex: 0 0 30%;
   position: relative;
   padding-right: 3.0rem;
+  margin-top: 3rem; 
 }
 
 
@@ -62,7 +85,7 @@
 .todo-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1rem;  
 }
 
 .todo-form label {
@@ -86,14 +109,14 @@
 }
 
 .todo-form button {
-  align-self: flex-start;
-  padding: 0.5rem 1.2rem;
+  padding: 0.5rem 1.5rem;
   background-color: #4a90e2;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 1rem;
+   align-self: flex-end; 
 }
 
 .todo-form button:hover {
