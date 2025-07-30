@@ -1,25 +1,51 @@
 <div class="todo-container">
-  <h2>📝 My TODO List</h2>
+  <h2>My TODO List</h2>
 
-<form class="todo-form">
-  <input type="text" placeholder="Title (e.g. Buy groceries)" />
-  <input type="text" placeholder="Notes (optional)" />
-  <button type="submit">Add</button>
-</form>
+  <div class="todo-content">
+    <!-- Left: Add Task Form -->
+    <form class="todo-form" (submit)="false">
+      <label for="title">Add Task</label>
+      <input
+        id="title"
+        type="text"
+        maxlength="100"
+        placeholder="Title (e.g. Buy groceries)"
+        [(ngModel)]="title"
+        name="title"
+        required
+      />
+      <div class="char-count">{{ title.length }} / 100</div>
 
-  <ul class="todo-list">
-    <li>
-      <div>
-        <strong>Example Task</strong>
-        <div class="description">Add your notes here...</div>
-      </div>
-      <button>Delete</button>
-    </li>
-    <li>
-      <div>
-        <strong>Add Task</strong>
-      </div>
-      <button>Delete</button>
-    </li>
-  </ul>
+      <label for="description">Description (optional)</label>
+      <textarea
+        id="description"
+        maxlength="1000"
+        rows="4"
+        placeholder="Optional Notes (e.g. Buy vegetables, milk, and butter)"
+        [(ngModel)]="description"
+        name="description"
+      ></textarea>
+      <div class="char-count">{{ description.length }} / 1000</div>
+
+      <button type="submit" disabled>Add</button> <!-- disabled so no submit action -->
+    </form>
+
+    <!-- Right: Static Task List -->
+    <ul class="todo-list">
+      <li>
+        <div>
+          <strong>Example Task</strong>
+          <button class="toggle-description" aria-expanded="false">Show Notes ▼</button>
+          <div class="description" hidden>Add your notes here...</div>
+        </div>
+        <button disabled>Delete</button> <!-- disabled to show no action -->
+      </li>
+      <li>
+        <div>
+          <strong>Add Task</strong>
+        </div>
+        <button disabled>Delete</button>
+      </li>
+    </ul>
+  </div>
 </div>
