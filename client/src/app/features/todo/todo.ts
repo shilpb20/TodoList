@@ -1,6 +1,12 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+interface Task {
+  title: string;
+  description?: string;
+  showDescription: boolean;
+}
+
 @Component({
   standalone: true,
   selector: 'app-todo',
@@ -8,16 +14,35 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./todo.css'],
   imports: [FormsModule],
 })
-
 export class Todo {
-  title: string = '';
-  description: string = '';
+  title = '';
+  description = '';
+
+  tasks: Task[] = [
+    {
+      title: 'Example Task',
+      description: 'Add your notes here...',
+      showDescription: false,
+    },
+  ];
+
+  toggleDesc(index: number) {
+    this.tasks[index].showDescription = !this.tasks[index].showDescription;
+  }
+
+  deleteTask(index: number) {
+    this.tasks.splice(index, 1);
+  }
 
   onAdd() {
-    console.log('Add clicked:', this.title, this.description);
-    // You can later add code here to submit to backend
+    if (!this.title.trim()) return;
 
-    // Clear inputs after submit
+    this.tasks.push({
+      title: this.title.trim(),
+      description: this.description.trim(),
+      showDescription: false,
+    });
+
     this.title = '';
     this.description = '';
   }
