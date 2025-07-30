@@ -5,7 +5,7 @@
   <div class="todo-content">
     <div class="left-panel">
       <h2>Add New Task</h2>
-      <form class="todo-form" (submit)="false">
+      <form class="todo-form" (ngSubmit)="onAdd()">
         <label for="title">Task</label>
         <input
           id="title"
@@ -29,7 +29,7 @@
         ></textarea>
         <div class="char-count">{{ description.length }} / 1000</div>
 
-        <button type="submit" disabled>Add</button>
+        <button type="submit" [disabled]="!title.trim()">Add</button>
       </form>
     </div>
 
