@@ -5,7 +5,7 @@ import { Todo } from './features/todo/todo';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Todo],
+  imports: [Todo],
   templateUrl: './app.html',
   styleUrls: ['./app.css']
 })

@@ -1,49 +1,45 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
-interface Task {
-  title: string;
-  description?: string;
-  showDescription: boolean;
-}
+import { CommonModule } from '@angular/common';
 
 @Component({
   standalone: true,
   selector: 'app-todo',
   templateUrl: './todo.html',
   styleUrls: ['./todo.css'],
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule],
 })
 export class Todo {
   title = '';
   description = '';
 
-  tasks: Task[] = [
+  tasks = [
     {
-      title: 'Example Task',
-      description: 'Add your notes here...',
+      id: 1,
+      title: 'Buy groceries',
+      description: 'Milk, Bread, Eggs',
+      showDescription: false,
+    },
+    {
+      id: 2,
+      title: 'Call plumber',
+      description: '',
       showDescription: false,
     },
   ];
 
-  toggleDesc(index: number) {
+  toggleDesc(index: number): void {
     this.tasks[index].showDescription = !this.tasks[index].showDescription;
   }
 
-  deleteTask(index: number) {
-    this.tasks.splice(index, 1);
-  }
-
-  onAdd() {
-    if (!this.title.trim()) return;
-
-    this.tasks.push({
-      title: this.title.trim(),
-      description: this.description.trim(),
-      showDescription: false,
-    });
-
+  onAdd(): void {
+    // For now, just log input
+    console.log('Submitted:', this.title, this.description);
     this.title = '';
     this.description = '';
+  }
+
+  deleteTask(index: number): void {
+    this.tasks.splice(index, 1);
   }
 }
