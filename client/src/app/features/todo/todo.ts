@@ -15,6 +15,9 @@ export class Todo implements OnInit {
   title = '';
   description = '';
 
+  toastMessage = '';
+  showToast = false;
+
   tasks: (TodoItem & { showDescription: boolean })[] = [];
 
     constructor(private todoService: TodoService) {
@@ -22,6 +25,7 @@ export class Todo implements OnInit {
     } 
 
   ngOnInit(): void {
+    
     this.todoService.getAll().subscribe({
       next: (todos) => {
         this.tasks = todos.map((todo) => ({ ...todo, showDescription: false }));
@@ -36,13 +40,35 @@ export class Todo implements OnInit {
     this.tasks[index].showDescription = !this.tasks[index].showDescription;
   }
 
-  onAdd(): void {
-    console.log('Submitted:', this.title, this.description);
-    this.title = '';
-    this.description = '';
+   showGrowl(message: string) {
+    this.toastMessage = message;
+    this.showToast = true;
+    setTimeout(() => {
+      this.showToast = false;
+    }, 3000);
   }
+
+onAdd(): void {
+  const newTodo = { title: this.title.trim(), description: this.description.trim() || undefined };
+  this.todoService.add(newTodo).subscribe({
+    next: (addedTodo) => {
+      this.tasks.push({ ...addedTodo, showDescription: false });
+
+      console.log('Submitted:', this.title, this.description);
+      this.showGrowl('Todo item added successfully!');
+      this.title = '';
+      this.description = '';
+    },
+    error: (err) => {
+      console.error('Error adding todo:', err);
+      alert('Failed to add todo item.');
+    }
+  });
+}
 
   deleteTask(index: number): void {
     this.tasks.splice(index, 1);
+
+  this.showGrowl('Task deleted successfully!');
   }
 }
