@@ -36,11 +36,20 @@ export class Todo implements OnInit {
     this.tasks[index].showDescription = !this.tasks[index].showDescription;
   }
 
-  onAdd(): void {
-    console.log('Submitted:', this.title, this.description);
-    this.title = '';
-    this.description = '';
-  }
+onAdd(): void {
+  const newTodo = { title: this.title.trim(), description: this.description.trim() || undefined };
+  this.todoService.add(newTodo).subscribe({
+    next: (addedTodo) => {
+      this.tasks.push({ ...addedTodo, showDescription: false });
+      this.title = '';
+      this.description = '';
+    },
+    error: (err) => {
+      console.error('Error adding todo:', err);
+      alert('Failed to add todo item.');
+    }
+  });
+}
 
   deleteTask(index: number): void {
     this.tasks.splice(index, 1);
