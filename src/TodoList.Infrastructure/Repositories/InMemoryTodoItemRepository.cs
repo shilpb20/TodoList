@@ -17,7 +17,7 @@ namespace TodoList.Infrastructure.Repositories
                 new TodoItem("Walk the dog"),
                 new TodoItem("Read a book", "Read at least 30 pages of 'Clean Architecture'"),
                 new TodoItem("Clean the house"),
-                new TodoItem("Pay electricity bill", "Due date is this Friday"),
+                new TodoItem("Pay electricity bill", "Due date is this Saturday"),
                 new TodoItem("Reply to recruiter"),
                 new TodoItem("Workout", "Cardio + core exercises, 30 minutes"),
                 new TodoItem("Plan weekend trip")
